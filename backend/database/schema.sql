@@ -15,7 +15,7 @@ DROP TYPE IF EXISTS transaction_type CASCADE;
 DROP TYPE IF EXISTS quality_grade CASCADE;
 
 -- Create custom ENUM types
-CREATE TYPE user_role AS ENUM ('farmer', 'distributor', 'retailer', 'admin');
+CREATE TYPE user_role AS ENUM ('farmer', 'distributor', 'retailer', 'inspector', 'manufacturer', 'admin');
 CREATE TYPE batch_status AS ENUM ('harvested', 'in_transit', 'delivered', 'processed', 'sold', 'cancelled');
 CREATE TYPE transaction_type AS ENUM ('transfer', 'pickup', 'delivery', 'inspection', 'sale');
 CREATE TYPE quality_grade AS ENUM ('A+', 'A', 'B+', 'B', 'C');

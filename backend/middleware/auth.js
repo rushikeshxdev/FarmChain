@@ -98,8 +98,32 @@ const optionalAuth = (req, res, next) => {
   }
 };
 
+// Middleware to restrict access to owner or admin
+const restrictToOwnerOrAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'User not authenticated'
+    });
+  }
+  
+  const requestedUserId = parseInt(req.params.id);
+  if (req.user.role === 'admin' || req.user.userId === requestedUserId) {
+    return next();
+  }
+  
+  return res.status(403).json({
+    status: 'error',
+    message: 'Access denied. You can only access your own resources.'
+  });
+};
+
 module.exports = {
   authenticate,
   authorize,
-  optionalAuth
+  optionalAuth,
+  // Aliases for route compatibility
+  protect: authenticate,
+  restrictTo: authorize,
+  restrictToOwnerOrAdmin
 };
