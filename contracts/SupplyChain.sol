@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title SupplyChain
@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
  * @custom:security-contact security@farmchain.com
  */
 contract SupplyChain is Ownable, ReentrancyGuard {
+    constructor() Ownable(msg.sender) {}
     // Structs
     struct Batch {
         string batchId;
@@ -29,7 +30,7 @@ contract SupplyChain is Ownable, ReentrancyGuard {
 
     // Events
     event BatchCreated(string batchId, address indexed farmer, string cropType, uint256 timestamp);
-    event OwnershipTransferred(string batchId, address indexed from, address indexed to, uint256 timestamp);
+    event BatchOwnershipTransferred(string batchId, address indexed from, address indexed to, uint256 timestamp);
     event StatusUpdated(string batchId, string status, uint256 timestamp);
     event QualityReportAdded(string batchId, address indexed inspector, string grade, uint256 timestamp);
 
@@ -84,7 +85,7 @@ contract SupplyChain is Ownable, ReentrancyGuard {
      * @param _batchId Batch identifier
      * @param _newOwner Address of the new owner
      */
-    function transferOwnership(string memory _batchId, address _newOwner) 
+    function transferBatchOwnership(string memory _batchId, address _newOwner) 
         external 
         batchExists(_batchId) 
         onlyBatchOwner(_batchId) 
@@ -96,7 +97,7 @@ contract SupplyChain is Ownable, ReentrancyGuard {
         batches[_batchId].currentOwner = _newOwner;
         batchHistory[_batchId].push(_newOwner);
 
-        emit OwnershipTransferred(_batchId, msg.sender, _newOwner, block.timestamp);
+        emit BatchOwnershipTransferred(_batchId, msg.sender, _newOwner, block.timestamp);
     }
 
     /**
@@ -162,7 +163,9 @@ contract SupplyChain is Ownable, ReentrancyGuard {
     /**
      * @dev Verifies if a batch exists and returns its current status
      * @param _batchId Batch identifier
-     * @return bool exists, address currentOwner, string status
+     * @return exists Boolean indicating if batch exists
+     * @return currentOwner Address of current batch owner
+     * @return status Current status string
      */
     function verifyBatch(string memory _batchId) 
         external 

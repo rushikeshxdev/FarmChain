@@ -66,7 +66,7 @@ async function main() {
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
   console.log(`Transferring ${batchId} to distributor...`);
-  const tx2 = await supplyChain.connect(farmer).transferOwnership(
+  const tx2 = await supplyChain.connect(farmer).transferBatchOwnership(
     batchId,
     distributor.address
   );
@@ -111,7 +111,7 @@ async function main() {
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
   console.log(`Transferring ${batchId} to retailer...`);
-  const tx4 = await supplyChain.connect(distributor).transferOwnership(
+  const tx4 = await supplyChain.connect(distributor).transferBatchOwnership(
     batchId,
     retailer.address
   );

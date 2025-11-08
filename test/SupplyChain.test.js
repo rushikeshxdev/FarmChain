@@ -94,13 +94,13 @@ describe("SupplyChain Contract", function () {
     });
 
     it("Should transfer ownership successfully", async function () {
-      const tx = await supplyChain.connect(farmer).transferOwnership(
+      const tx = await supplyChain.connect(farmer).transferBatchOwnership(
         batchId,
         distributor.address
       );
 
       await expect(tx)
-        .to.emit(supplyChain, "OwnershipTransferred")
+        .to.emit(supplyChain, "BatchOwnershipTransferred")
         .withArgs(batchId, farmer.address, distributor.address, await ethers.provider.getBlock("latest").then(b => b.timestamp));
 
       const batch = await supplyChain.batches(batchId);
@@ -108,8 +108,8 @@ describe("SupplyChain Contract", function () {
     });
 
     it("Should update ownership history", async function () {
-      await supplyChain.connect(farmer).transferOwnership(batchId, distributor.address);
-      await supplyChain.connect(distributor).transferOwnership(batchId, retailer.address);
+      await supplyChain.connect(farmer).transferBatchOwnership(batchId, distributor.address);
+      await supplyChain.connect(distributor).transferBatchOwnership(batchId, retailer.address);
 
       const history = await supplyChain.getBatchHistory(batchId);
       expect(history.length).to.equal(3);
@@ -120,25 +120,25 @@ describe("SupplyChain Contract", function () {
 
     it("Should reject transfer from non-owner", async function () {
       await expect(
-        supplyChain.connect(distributor).transferOwnership(batchId, retailer.address)
+        supplyChain.connect(distributor).transferBatchOwnership(batchId, retailer.address)
       ).to.be.revertedWith("Not batch owner");
     });
 
     it("Should reject transfer to zero address", async function () {
       await expect(
-        supplyChain.connect(farmer).transferOwnership(batchId, ethers.ZeroAddress)
+        supplyChain.connect(farmer).transferBatchOwnership(batchId, ethers.ZeroAddress)
       ).to.be.revertedWith("Invalid new owner");
     });
 
     it("Should reject transfer to self", async function () {
       await expect(
-        supplyChain.connect(farmer).transferOwnership(batchId, farmer.address)
+        supplyChain.connect(farmer).transferBatchOwnership(batchId, farmer.address)
       ).to.be.revertedWith("Cannot transfer to self");
     });
 
     it("Should reject transfer of non-existent batch", async function () {
       await expect(
-        supplyChain.connect(farmer).transferOwnership("INVALID", distributor.address)
+        supplyChain.connect(farmer).transferBatchOwnership("INVALID", distributor.address)
       ).to.be.revertedWith("Batch does not exist");
     });
   });
@@ -250,7 +250,7 @@ describe("SupplyChain Contract", function () {
       expect(batch.status).to.equal("Created");
 
       // 2. Farmer transfers to distributor
-      await supplyChain.connect(farmer).transferOwnership(batchId, distributor.address);
+      await supplyChain.connect(farmer).transferBatchOwnership(batchId, distributor.address);
       await supplyChain.connect(distributor).updateBatchStatus(batchId, "In Transit");
 
       batch = await supplyChain.batches(batchId);
@@ -258,7 +258,7 @@ describe("SupplyChain Contract", function () {
       expect(batch.status).to.equal("In Transit");
 
       // 3. Distributor transfers to retailer
-      await supplyChain.connect(distributor).transferOwnership(batchId, retailer.address);
+      await supplyChain.connect(distributor).transferBatchOwnership(batchId, retailer.address);
       await supplyChain.connect(retailer).updateBatchStatus(batchId, "Delivered");
 
       batch = await supplyChain.batches(batchId);
@@ -294,7 +294,7 @@ describe("SupplyChain Contract", function () {
       
       // Transfer should complete successfully (no reentrancy)
       await expect(
-        supplyChain.connect(farmer).transferOwnership(batchId, distributor.address)
+        supplyChain.connect(farmer).transferBatchOwnership(batchId, distributor.address)
       ).to.not.be.reverted;
     });
   });
