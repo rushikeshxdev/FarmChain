@@ -197,6 +197,84 @@ const validateBatchId = [
   validate
 ];
 
+// Additional validation functions for routes
+const profileUpdate = [
+  body('name').optional().trim().isLength({ min: 2, max: 100 }),
+  body('phone').optional().matches(/^[0-9]{10}$/),
+  body('location').optional().trim().isLength({ max: 200 }),
+  validate
+];
+
+const refreshToken = [
+  body('refreshToken').notEmpty().withMessage('Refresh token is required'),
+  validate
+];
+
+const createBatch = validateBatchCreation;
+const listBatches = [validate];
+const updateBatch = validateBatchUpdate;
+const qualityInspection = validateQualityReport;
+
+const createTransaction = validateTransaction;
+const listTransactions = [validate];
+const transferOwnership = [
+  body('toUserId').isInt({ min: 1 }).withMessage('Invalid user ID'),
+  validate
+];
+const transactionId = [
+  param('transactionId').isInt({ min: 1 }).withMessage('Invalid transaction ID'),
+  validate
+];
+
+const createQualityReport = validateQualityReport;
+const updateQualityReport = validateQualityReport;
+
+const dateRangeQuery = [
+  query('startDate').optional().isISO8601(),
+  query('endDate').optional().isISO8601(),
+  validate
+];
+
+const farmerMetrics = [
+  param('farmerId').optional().isInt({ min: 1 }),
+  validate
+];
+
+const supplyChainMetrics = [validate];
+const exportReport = [
+  query('reportType').optional().isIn(['batches', 'transactions', 'quality']),
+  validate
+];
+
+const blockchainSync = [
+  body('batchIds').isArray().withMessage('Batch IDs must be an array'),
+  validate
+];
+
+const verifyMultipleBatches = [
+  body('batchIds').isArray().withMessage('Batch IDs must be an array'),
+  validate
+];
+
+const listUsers = [
+  query('role').optional().isIn(['farmer', 'distributor', 'retailer', 'inspector', 'manufacturer', 'admin']),
+  validate
+];
+
+const userId = [
+  param('userId').isInt({ min: 1 }).withMessage('Invalid user ID'),
+  validate
+];
+
+const updateUser = [
+  body('name').optional().trim().isLength({ min: 2, max: 100 }),
+  body('email').optional().isEmail(),
+  body('role').optional().isIn(['farmer', 'distributor', 'retailer', 'inspector', 'manufacturer', 'admin']),
+  validate
+];
+
+const batchId = validateBatchId;
+
 module.exports = {
   validate,
   validateRegistration,
@@ -206,5 +284,30 @@ module.exports = {
   validateTransaction,
   validateQualityReport,
   validateId,
-  validateBatchId
+  validateBatchId,
+  // Aliases for routes
+  registration: validateRegistration,
+  login: validateLogin,
+  profileUpdate,
+  refreshToken,
+  createBatch,
+  listBatches,
+  updateBatch,
+  qualityInspection,
+  createTransaction,
+  listTransactions,
+  transferOwnership,
+  transactionId,
+  createQualityReport,
+  updateQualityReport,
+  dateRangeQuery,
+  farmerMetrics,
+  supplyChainMetrics,
+  exportReport,
+  blockchainSync,
+  verifyMultipleBatches,
+  listUsers,
+  userId,
+  updateUser,
+  batchId
 };

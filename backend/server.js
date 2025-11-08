@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const logger = require('./config/logger');
 const { connectDB, testConnection } = require('./config/database');
-const errorHandler = require('./middleware/errorHandler');
+const { errorHandler } = require('./middleware/errorHandler');
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');

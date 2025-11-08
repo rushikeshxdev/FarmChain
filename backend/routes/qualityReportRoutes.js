@@ -60,27 +60,16 @@ router.put('/:id',
 );
 
 /**
- * @route   GET /api/reports/metrics/:batchId
- * @desc    Get quality metrics summary for batch
- * @access  Private
- * @param   batchId: string
- * @returns {metrics: Object}
+ * @route   DELETE /api/reports/:id
+ * @desc    Delete quality report (Admin only)
+ * @access  Private (Admin only)
+ * @param   id: string
+ * @returns {message: string}
  */
-router.get('/metrics/:batchId',
+router.delete('/:id',
     auth.protect,
-    validate.batchId,
-    qualityReportController.getBatchMetrics
-);
-
-/**
- * @route   GET /api/reports/standards
- * @desc    Get quality standards reference
- * @access  Private
- * @returns {standards: Object}
- */
-router.get('/standards',
-    auth.protect,
-    qualityReportController.getQualityStandards
+    auth.restrictTo('admin'),
+    qualityReportController.deleteReport
 );
 
 module.exports = router;

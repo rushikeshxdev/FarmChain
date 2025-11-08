@@ -61,7 +61,7 @@ router.get('/',
 router.get('/:id',
     auth.protect,
     validate.batchId,
-    batchController.getBatchDetails
+    batchController.getBatch
 );
 
 /**
@@ -116,23 +116,17 @@ router.get('/:id/verify',
 );
 
 /**
- * @route   POST /api/batches/:id/quality
- * @desc    Add quality inspection result
- * @access  Private (Authorized inspector)
+ * @route   POST /:id/verify
+ * @desc    Verify batch ownership and authenticity (for QR scanning)
+ * @access  Public
  * @param   id: string
- * @body    {
- *            grade: string,
- *            remarks: string,
- *            pesticideUsed: boolean,
- *            organicCertified: boolean
- *          }
- * @returns {report: Object}
+ * @returns {batch: Object, verified: boolean}
  */
-router.post('/:id/quality',
-    auth.protect,
-    auth.restrictTo('inspector', 'manufacturer'),
-    validate.qualityInspection,
-    batchController.addQualityReport
+router.post('/:id/verify',
+    validate.batchId,
+    batchController.verifyBatch
 );
+
+module.exports = router;
 
 module.exports = router;

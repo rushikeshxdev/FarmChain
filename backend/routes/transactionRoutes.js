@@ -61,30 +61,6 @@ router.get('/batch/:batchId',
 );
 
 /**
- * @route   POST /api/transactions/transfer
- * @desc    Transfer batch ownership
- * @access  Private
- * @body    {
- *            batchId: string,
- *            toUserId: number,
- *            location: string,
- *            temperature?: number,
- *            humidity?: number,
- *            notes?: string
- *          }
- * @returns {
- *           transaction: Object,
- *           blockchainTx: Object
- *         }
- */
-router.post('/transfer',
-    auth.protect,
-    auth.restrictTo('farmer', 'distributor', 'retailer'),
-    validate.transferOwnership,
-    transactionController.transferOwnership
-);
-
-/**
  * @route   GET /api/transactions/:id
  * @desc    Get transaction details
  * @access  Private
@@ -95,17 +71,6 @@ router.get('/:id',
     auth.protect,
     validate.transactionId,
     transactionController.getTransaction
-);
-
-/**
- * @route   GET /api/transactions/pending
- * @desc    Get pending transactions for user
- * @access  Private
- * @returns {transactions: Array}
- */
-router.get('/pending',
-    auth.protect,
-    transactionController.getPendingTransactions
 );
 
 module.exports = router;

@@ -58,33 +58,4 @@ router.post('/sync',
     blockchainController.syncToBlockchain
 );
 
-/**
- * @route   GET /api/blockchain/status
- * @desc    Get blockchain sync status
- * @access  Private (Admin only)
- * @returns {
- *           lastSync: date,
- *           pendingSync: number,
- *           networkStatus: string
- *         }
- */
-router.get('/status',
-    auth.protect,
-    auth.restrictTo('admin'),
-    blockchainController.getBlockchainStatus
-);
-
-/**
- * @route   POST /api/blockchain/verify-multiple
- * @desc    Batch verify multiple records
- * @access  Private
- * @body    {batchIds: Array<string>}
- * @returns {results: Array}
- */
-router.post('/verify-multiple',
-    auth.protect,
-    validate.verifyMultipleBatches,
-    blockchainController.verifyMultipleBatches
-);
-
 module.exports = router;

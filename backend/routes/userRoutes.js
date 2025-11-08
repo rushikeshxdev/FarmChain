@@ -75,30 +75,4 @@ router.delete('/:id',
     userController.deactivateUser
 );
 
-/**
- * @route   GET /api/users/roles
- * @desc    Get available user roles
- * @access  Private (Admin only)
- * @returns {roles: Array}
- */
-router.get('/roles',
-    auth.protect,
-    auth.restrictTo('admin'),
-    userController.getUserRoles
-);
-
-/**
- * @route   POST /api/users/:id/reset-password
- * @desc    Admin reset user password
- * @access  Private (Admin only)
- * @param   id: string
- * @returns {message: string}
- */
-router.post('/:id/reset-password',
-    auth.protect,
-    auth.restrictTo('admin'),
-    validate.userId,
-    userController.resetUserPassword
-);
-
 module.exports = router;
